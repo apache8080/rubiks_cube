@@ -11,7 +11,7 @@ For the 126 final project, I am going to build a Rubic's Cube playground. In the
 * **Checkpoint 2**
   * Using the Rubic's Cube API add mouse controls to rotate individual sides of the cube so the user can try to solve the cube.
   * Check to see if the cube is solved.
-* **Checkpoint 3 **
+* **Checkpoint 3**
   * Using the Rubic's Cube API build a scrambling feature so the cube can be mixed up after a user has solved the cube.
   * Also build a timer into the app so a user can time themselves solving the cube.
 * **Other Potential Features If Time Permits**
