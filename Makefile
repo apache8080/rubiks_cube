@@ -1,6 +1,6 @@
-CC = g++
-CFLAGS = -Wall
-PROG = basicshapes
+CC = clang++
+CFLAGS = -std=c++11 -Wall
+PROG = rubiks
 
 SRCS = main.cpp
 
