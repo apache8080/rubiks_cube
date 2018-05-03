@@ -9,3 +9,9 @@ I spent most of this time experimenting with the 3D modules in openFrameworks, a
 ### Week 3 Status
 
 Once I learned the basics of OpenGL I was able to build a working demo of a playable Rubik's Cube. One issue with this current working demo is the entire thing was written in a main file and I haven't quite figured out how to use OpenGL in an object oriented manner since it is a C API. I think the approach I am going to take is abstract out a lot of the state tracking and calculations done for translation and rotation to classes and then have the main file have all of the OpenGL code.
+
+
+
+### Final Update
+
+So Wednesday night I finished a lot of the work for the project. I made the project as object oriented as possible with OpenGL. I also added test cases for the things that didn't rely on OpenGL for rendering.
