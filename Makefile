@@ -2,9 +2,9 @@ CC = clang++
 CFLAGS = -std=c++11 -Wall
 PROG = rubiks
 
-SRCS = src/objects/cube.cpp src/main.cpp
+SRCS = src/utils/camera.cpp src/objects/cube.cpp src/main.cpp
 
-OBJS = main.o cube.o
+OBJS = main.o cube.o camera.o
 
 LD = clang++
 LDFLAGS = -std=c++1y -stdlib=libc++ -lpthread -lm
