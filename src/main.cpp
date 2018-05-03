@@ -11,11 +11,6 @@ using utils::Camera;
 Cube rubiks;
 Camera cam;
 
-GLfloat angle, fAspect, cube_size;
-GLint rot_x, rot_y, crement, x_0, x_k, y_0, y_k, z_0, z_k, gap, gap_crement;
-
-//vector<CubeRotation> cubeStates[3][3][3];
-
 void loadVisualParams();
 
 void setCameraCoords() {
@@ -32,8 +27,6 @@ void drawCube(int x, int y, int z) {
   glTranslatef(rubiks.getXTranslate(x, cam.getGap()),
                rubiks.getYTranslate(y, cam.getGap()),
                rubiks.getZTranslate(z, cam.getGap()));
-
-  //glTranslatef((x - 1) * cube_size + x * gap, (y - 1) * cube_size + y * gap, (z - 1) * cube_size + z * gap);
 
   for (int i = lrot.size() - 1; i >= 0; i--) {
     glRotatef(lrot[i].angle, lrot[i].x, lrot[i].y, lrot[i].z);
