@@ -1,146 +1,99 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <vector>
+#include "objects/cube.h"
 
 using namespace std;
+using objects::Cube;
 
-struct CubeRotation {
-  GLfloat angle, x, y, z;
-};
+Cube rubiks;
 
 GLfloat angle, fAspect, cube_size;
 GLint rot_x, rot_y, crement, x_0, x_k, y_0, y_k, z_0, z_k, gap, gap_crement;
 
-vector<CubeRotation> cubeStates[3][3][3];
+//vector<CubeRotation> cubeStates[3][3][3];
 
 void loadVisualParams();
-
-void rotateCube(GLfloat angle) {
-  vector<CubeRotation> cubeFaces[3][3];
-  int id;
-  CubeRotation rotationVal;
-
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
-      id = 2 - j%3;
-      if (x_0 == x_k) {
-        rotationVal = {angle, 1.0, 0.0, 0.0};
-        cubeFaces[id][i] = cubeStates[x_k][i][j];
-      }
-
-      if (y_0 == y_k) {
-        rotationVal = {angle, 0.0, 1.0, 0.0};
-        cubeFaces[id][i] = cubeStates[j][y_k][i];
-      }
-
-      if (z_0 == z_k) {
-        rotationVal = {-1 * angle, 0.0, 0.0, 1.0};
-        cubeFaces[id][i] = cubeStates[j][i][z_k];
-      }
-
-      cubeFaces[id][i].push_back(rotationVal);
-    }
-  }
-
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
-      if (x_0 == x_k) {
-        cubeStates[x_k][i][j] = cubeFaces[i][j];
-      }
-
-      if (y_0 == y_k) {
-        cubeStates[j][y_k][i] = cubeFaces[i][j];
-      }
-
-      if (z_0 == z_k) {
-        cubeStates[j][i][z_k] = cubeFaces[i][j];
-      }
-    }
-  }
-}
-
-void resetSelectedCubeFace() {
-  x_0 = 0;
-  x_k = 2;
-  y_0 = 0;
-  y_k = 2;
-  z_0 = 0;
-  z_k = 2;
-}
 
 void setCameraCoords() {
   gluLookAt(0, 80, 200, 0, 0, 0, 0, 1, 0);
 }
 
 void drawCube(int x, int y, int z) {
-  vector<CubeRotation> lrot = cubeStates[x][y][z];
+  vector<Cube::CubeRotation> lrot = rubiks.cubeStates[x][y][z];
 
   glPushMatrix();
 
-  glTranslatef((x - 1) * cube_size + x * gap, (y - 1) * cube_size + y * gap, (z - 1) * cube_size + z * gap);
+  glTranslatef(rubiks.getXTranslate(x, gap),
+               rubiks.getYTranslate(y, gap),
+               rubiks.getZTranslate(z, gap));
+
+  //glTranslatef((x - 1) * cube_size + x * gap, (y - 1) * cube_size + y * gap, (z - 1) * cube_size + z * gap);
 
   for (int i = lrot.size() - 1; i >= 0; i--) {
     glRotatef(lrot[i].angle, lrot[i].x, lrot[i].y, lrot[i].z);
   }
 
+  GLfloat cubeSize = rubiks.getCubeSize();
+
   //  front face
   glColor3f(1.0, 0.0, 0.0);
   glBegin(GL_QUADS);
     glNormal3f(0.0, 0.0, 1.0);
-    glVertex3f(cube_size/2, cube_size/2, cube_size/2);
-    glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
-    glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
-    glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
+    glVertex3f(cubeSize/2, cubeSize/2, cubeSize/2);
+    glVertex3f(-cubeSize/2, cubeSize/2, cubeSize/2);
+    glVertex3f(-cubeSize/2, -cubeSize/2, cubeSize/2);
+    glVertex3f(cubeSize/2, -cubeSize/2, cubeSize/2);
   glEnd();
 
   //  back face
   glColor3f(1.0, 0.5, 0.0);
   glBegin(GL_QUADS);
     glNormal3f(0.0, 0.0, -1.0);
-    glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
-    glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
-    glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
-    glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
+    glVertex3f(cubeSize/2, cubeSize/2, -cubeSize/2);
+    glVertex3f(cubeSize/2, -cubeSize/2, -cubeSize/2);
+    glVertex3f(-cubeSize/2, -cubeSize/2, -cubeSize/2);
+    glVertex3f(-cubeSize/2, cubeSize/2, -cubeSize/2);
   glEnd();
 
   //  left face
   glColor3f(0.0, 0.0, 1.0);
   glBegin(GL_QUADS);
     glNormal3f(-1.0, 0.0, 0.0);
-    glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
-    glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
-    glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
-    glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
+    glVertex3f(-cubeSize/2, cubeSize/2, cubeSize/2);
+    glVertex3f(-cubeSize/2, cubeSize/2, -cubeSize/2);
+    glVertex3f(-cubeSize/2, -cubeSize/2, -cubeSize/2);
+    glVertex3f(-cubeSize/2, -cubeSize/2, cubeSize/2);
   glEnd();
 
   //  right face
   glColor3f(0.0, 1.0, 0.0);
   glBegin(GL_QUADS);
     glNormal3f(1.0, 0.0, 0.0);
-    glVertex3f(cube_size/2, cube_size/2, cube_size/2);
-    glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
-    glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
-    glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
+    glVertex3f(cubeSize/2, cubeSize/2, cubeSize/2);
+    glVertex3f(cubeSize/2, -cubeSize/2, cubeSize/2);
+    glVertex3f(cubeSize/2, -cubeSize/2, -cubeSize/2);
+    glVertex3f(cubeSize/2, cubeSize/2, -cubeSize/2);
   glEnd();
 
   //  top face
   glColor3f(1.0, 1.0, 1.0);
   glBegin(GL_QUADS);
     glNormal3f(0.0, 1.0, 0.0);
-    glVertex3f(-cube_size/2, cube_size/2, -cube_size/2);
-    glVertex3f(-cube_size/2, cube_size/2, cube_size/2);
-    glVertex3f(cube_size/2, cube_size/2, cube_size/2);
-    glVertex3f(cube_size/2, cube_size/2, -cube_size/2);
+    glVertex3f(-cubeSize/2, cubeSize/2, -cubeSize/2);
+    glVertex3f(-cubeSize/2, cubeSize/2, cubeSize/2);
+    glVertex3f(cubeSize/2, cubeSize/2, cubeSize/2);
+    glVertex3f(cubeSize/2, cubeSize/2, -cubeSize/2);
   glEnd();
 
   //  bottom face
   glColor3f(1.0, 1.0, 0.0);
   glBegin(GL_QUADS);
     glNormal3f(0.0, -1.0, 0.0);
-    glVertex3f(-cube_size/2, -cube_size/2, -cube_size/2);
-    glVertex3f(cube_size/2, -cube_size/2, -cube_size/2);
-    glVertex3f(cube_size/2, -cube_size/2, cube_size/2);
-    glVertex3f(-cube_size/2, -cube_size/2, cube_size/2);
+    glVertex3f(-cubeSize/2, -cubeSize/2, -cubeSize/2);
+    glVertex3f(cubeSize/2, -cubeSize/2, -cubeSize/2);
+    glVertex3f(cubeSize/2, -cubeSize/2, cubeSize/2);
+    glVertex3f(-cubeSize/2, -cubeSize/2, cubeSize/2);
   glEnd();
 
   glPopMatrix();
@@ -148,16 +101,14 @@ void drawCube(int x, int y, int z) {
 
 
 void draw() {
-  int x = -cube_size, y = -cube_size, z = -cube_size;
-
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
 
   setCameraCoords();
 
-  glRotatef(rot_x, 1.0, 0.0, 0.0);
-  glRotatef(rot_y, 0.0, 1.0, 0.0);
+  glRotatef(rubiks.getXRotation(), 1.0, 0.0, 0.0);
+  glRotatef(rubiks.getYRotation(), 0.0, 1.0, 0.0);
 
   for (int i = 0; i < 3; ++i) {
     for (int j = 0; j < 3; ++j) {
@@ -171,10 +122,11 @@ void draw() {
 }
 
 void init() { 
-  cube_size = 30.0;
-  rot_x = 0.0;
-  rot_y = 0.0;
-  crement = 5;
+  rubiks.setCubeSize(30.0);
+  rubiks.setXRotation(0.0);
+  rubiks.setYRotation(0.0);
+  rubiks.setRotationIncrement(5);
+
   gap = 5;
   gap_crement = 3;
 
@@ -244,81 +196,72 @@ void controls(unsigned char key, int x, int y) {
       break;
 
     case 'l':
-      rot_y = (rot_y - crement) % 360;
+      rubiks.rotateY(-1);
       break;
 
     case 'j':
-      rot_y = (rot_y + crement) % 360;
+      rubiks.rotateY(1);
       break;
 
     case 'i':
-      rot_x = (rot_x + crement) % 360;
+      rubiks.rotateX(1);
       break;
 
     case 'k':
-      rot_x = (rot_x - crement) % 360;
+      rubiks.rotateX(-1);
       break;
 
     case 'q':
-      resetSelectedCubeFace();
-      x_0 = 0;
-      x_k = 0;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceX(0, 0);
       break;
 
     case 'w':
-      resetSelectedCubeFace();
-      x_0 = 1;
-      x_k = 1;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceX(1, 1);
       break;
 
     case 'e':
-      resetSelectedCubeFace();
-      x_0 = 2;
-      x_k = 2;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceX(2, 2);
       break;
 
     case 'a':
-      resetSelectedCubeFace();
-      y_0 = 0;
-      y_k = 0;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceY(0, 0);
       break;
 
     case 's':
-      resetSelectedCubeFace();
-      y_0 = 1;
-      y_k = 1;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceY(1, 1);
       break;
 
     case 'd':
-      resetSelectedCubeFace();
-      y_0 = 2;
-      y_k = 2;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceY(2, 2);
       break;
 
     case 'c':
-      resetSelectedCubeFace();
-      z_0 = 0;
-      z_k = 0;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceZ(0, 0);
       break;
 
     case 'x':
-      resetSelectedCubeFace();
-      z_0 = 1;
-      z_k = 1;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceZ(1, 1);
       break;
 
     case 'z':
-      resetSelectedCubeFace();
-      z_0 = 2;
-      z_k = 2;
+      rubiks.resetSelectedCubeFace();
+      rubiks.selectCubeFaceZ(2, 2);
       break;
 
     case 'u':
-      rotateCube(-90);
+      rubiks.rotateSelectedCubeFace(-90);
       break;
 
     case 'o':
-      rotateCube(90);
+      rubiks.rotateSelectedCubeFace(90);
       break;
 
     default:
