@@ -2,11 +2,14 @@
 #include <GL/glut.h>
 #include <vector>
 #include "objects/cube.h"
+#include "utils/camera.h"
 
 using namespace std;
 using objects::Cube;
+using utils::Camera;
 
 Cube rubiks;
+Camera cam;
 
 GLfloat angle, fAspect, cube_size;
 GLint rot_x, rot_y, crement, x_0, x_k, y_0, y_k, z_0, z_k, gap, gap_crement;
@@ -16,7 +19,9 @@ GLint rot_x, rot_y, crement, x_0, x_k, y_0, y_k, z_0, z_k, gap, gap_crement;
 void loadVisualParams();
 
 void setCameraCoords() {
-  gluLookAt(0, 80, 200, 0, 0, 0, 0, 1, 0);
+  gluLookAt(Camera::eyeX, Camera::eyeY, Camera::eyeZ,
+            Camera::centerX, Camera::centerY, Camera::centerZ,
+            Camera::upX, Camera::upY, Camera::upZ);
 }
 
 void drawCube(int x, int y, int z) {
@@ -24,9 +29,9 @@ void drawCube(int x, int y, int z) {
 
   glPushMatrix();
 
-  glTranslatef(rubiks.getXTranslate(x, gap),
-               rubiks.getYTranslate(y, gap),
-               rubiks.getZTranslate(z, gap));
+  glTranslatef(rubiks.getXTranslate(x, cam.getGap()),
+               rubiks.getYTranslate(y, cam.getGap()),
+               rubiks.getZTranslate(z, cam.getGap()));
 
   //glTranslatef((x - 1) * cube_size + x * gap, (y - 1) * cube_size + y * gap, (z - 1) * cube_size + z * gap);
 
@@ -127,8 +132,8 @@ void init() {
   rubiks.setYRotation(0.0);
   rubiks.setRotationIncrement(5);
 
-  gap = 5;
-  gap_crement = 3;
+  cam.setGap(5);
+  cam.setGapIncrement(3);
 
   GLfloat ambient_lighte[4] = {0.2, 0.2, 0.2, 1.0};
   GLfloat diffuse_light[4] = {0.7, 0.7, 0.7, 1.0};
@@ -158,14 +163,14 @@ void init() {
   glEnable(GL_LIGHT0);
   glEnable(GL_DEPTH_TEST);
 
-  angle = 45;
+  cam.setAngle(45);
 }
 
 void loadVisualParams() {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  gluPerspective(angle, fAspect, 0.4, 500);
+  gluPerspective(cam.getAngle(), cam.getFAspect(), 0.4, 500);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -180,7 +185,7 @@ void reshapeWindow(GLsizei w, GLsizei h) {
 
   glViewport(0, 0, w, h);
 
-  fAspect = (GLfloat)(w) / (GLfloat)(h);
+  cam.setFAspect((GLfloat) w, (GLfloat) h);
 
   loadVisualParams();
 }
@@ -188,11 +193,11 @@ void reshapeWindow(GLsizei w, GLsizei h) {
 void controls(unsigned char key, int x, int y) {
   switch (key) {
     case '+':
-      gap += gap_crement;
+      cam.zoomOut();
       break;
 
     case '-':
-      gap -= gap_crement;
+      cam.zoomIn();
       break;
 
     case 'l':
