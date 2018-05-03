@@ -1,15 +1,9 @@
 #ifndef _CUBE_H_
 #define _CUBE_H_
 
-#define GL_GLEXT_PROTOTYPES
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
 #include <GL/glut.h>
 #include <GL/gl.h>
-#endif
 
-#include <cmath>
 #include <vector>
 
 using std::vector;
