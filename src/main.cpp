@@ -3,10 +3,12 @@
 #include <vector>
 #include "objects/cube.h"
 #include "utils/camera.h"
+#include "utils/controller.h"
 
 using namespace std;
 using objects::Cube;
 using utils::Camera;
+using utils::Controller;
 
 Cube rubiks;
 Camera cam;
@@ -184,86 +186,49 @@ void reshapeWindow(GLsizei w, GLsizei h) {
 }
 
 void controls(unsigned char key, int x, int y) {
-  switch (key) {
-    case '+':
+  if (key == Controller::ZOOM_IN_KEY) {
       cam.zoomOut();
-      break;
-
-    case '-':
+  } else if (key == Controller::ZOOM_OUT_KEY) {
       cam.zoomIn();
-      break;
-
-    case 'l':
-      rubiks.rotateY(-1);
-      break;
-
-    case 'j':
+  } else if (key == Controller::RIGHT_ARROW_KEY) {
       rubiks.rotateY(1);
-      break;
-
-    case 'i':
-      rubiks.rotateX(1);
-      break;
-
-    case 'k':
+  } else if (key == Controller::LEFT_ARROW_KEY) {
+      rubiks.rotateY(-1);
+  } else if (key == Controller::UP_ARROW_KEY) {
       rubiks.rotateX(-1);
-      break;
-
-    case 'q':
+  } else if (key == Controller::DOWN_ARROW_KEY) {
+      rubiks.rotateX(1);
+  } else if (key == Controller::X_LAYER1_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceX(0, 0);
-      break;
-
-    case 'w':
+  } else if (key == Controller::X_LAYER2_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceX(1, 1);
-      break;
-
-    case 'e':
+  } else if (key == Controller::X_LAYER3_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceX(2, 2);
-      break;
-
-    case 'a':
+  } else if (key == Controller::Y_LAYER1_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceY(0, 0);
-      break;
-
-    case 's':
+  } else if (key == Controller::Y_LAYER2_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceY(1, 1);
-      break;
-
-    case 'd':
+  } else if (key == Controller::Y_LAYER3_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceY(2, 2);
-      break;
-
-    case 'c':
+  } else if (key == Controller::Z_LAYER1_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceZ(0, 0);
-      break;
-
-    case 'x':
+  } else if (key == Controller::Z_LAYER2_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceZ(1, 1);
-      break;
-
-    case 'z':
+  } else if (key == Controller::Z_LAYER3_KEY) {
       rubiks.resetSelectedCubeFace();
       rubiks.selectCubeFaceZ(2, 2);
-      break;
-
-    case 'u':
+  } else if (key == Controller::COUNTER_CLOCKWISE_KEY) {
       rubiks.rotateSelectedCubeFace(-90);
-      break;
-
-    case 'o':
+  } else if (key == Controller::CLOCKWISE_KEY) {
       rubiks.rotateSelectedCubeFace(90);
-      break;
-
-    default:
-      break;
   }
 
   glutPostRedisplay();
